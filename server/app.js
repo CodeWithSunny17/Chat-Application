@@ -19,9 +19,20 @@ app.get("/", (req, res) => {
 })
 
 io.on("connection", (socket) => {
-    console.log("user connected");
-    console.log("id: ", socket.id);
-    socket.emit("welcome", `welcome to the server: ${socket.id}`)
+    console.log("user connected", socket.id);
+
+    // socket.emit("welcome", `welcome to the server: ${socket.id}`)
+    // socket.broadcast.emit("welcome", `${socket.id} joined the server`)
+
+    socket.on("message", (data) => {
+        console.log(data);
+        // io.emit("recieve-message", data)    //sending messages to everyone
+        socket.broadcast.emit("recieve-message", data)    //sending messages to everyone except himself
+    })
+
+    socket.on("disconnect", () => {
+        console.log("user disconnected", socket.id);
+    })
 })
 
 server.listen(port, () => {
