@@ -24,10 +24,11 @@ io.on("connection", (socket) => {
     // socket.emit("welcome", `welcome to the server: ${socket.id}`)
     // socket.broadcast.emit("welcome", `${socket.id} joined the server`)
 
-    socket.on("message", (data) => {
-        console.log(data);
-        // io.emit("recieve-message", data)    //sending messages to everyone
-        socket.broadcast.emit("recieve-message", data)    //sending messages to everyone except himself
+    socket.on("message", ({ message, room }) => {
+        console.log({ message, room });
+        // io.emit("recieve-message", message)    //sending messages to everyone including you
+        // socket.broadcast.emit("recieve-message", message)    //sending messages to everyone except yourself
+        io.to(room).emit("recieve-message", message)    //sending message to specific/ a particular group of people
     })
 
     socket.on("disconnect", () => {
