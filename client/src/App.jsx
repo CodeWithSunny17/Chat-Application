@@ -6,8 +6,8 @@ export default function App() {
   const [room, setRoom] = useState("");
   const [socketId, setSocketId] = useState("");
   const [senderMessage, setSenderMessage] = useState("");
-  const [recieverMessage, setRecieverMessage] = useState("");
-
+  const [recieverMessage, setRecieverMessage] = useState([]);
+  console.log(recieverMessage);
   const socket = useMemo(() => io("http://localhost:3000"), []);
   useEffect(() => {
     socket.on("connect", () => {
@@ -18,8 +18,8 @@ export default function App() {
       console.log(s);
     });
     socket.on("recieve-message", (data) => {
-      console.log(data);
-      setRecieverMessage(data);
+      // console.log(data);
+      setRecieverMessage((recieverMessage) => [...recieverMessage, data]);
     });
     return () => {
       socket.disconnect();
@@ -38,7 +38,11 @@ export default function App() {
       <div>
         <div className=""></div>
         <h4>Receiver</h4>
-        <span>{recieverMessage}</span>
+        <div className="flex flex-col">
+          {recieverMessage?.map((m, i) => {
+            return <span key={i}>{m}</span>;
+          })}
+        </div>
         <div className="">
           <h3>Sender: {socketId}</h3>
         </div>
